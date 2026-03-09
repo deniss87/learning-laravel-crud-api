@@ -7,24 +7,34 @@
 
         <title>{{ config('app.name', 'Laravel') }}</title>
 
-        <!-- Fonts -->
-        <link rel="preconnect" href="https://fonts.bunny.net">
-        <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;800&display=swap" rel="stylesheet">
 
-        <!-- Scripts -->
+        <style>
+            body { font-family: 'Sora', sans-serif; }
+        </style>
+
         @vite(['resources/css/app.css', 'resources/js/app.js'])
     </head>
-    <body class="font-sans text-gray-900 antialiased">
-        <div class="min-h-screen flex flex-col sm:justify-center items-center pt-6 sm:pt-0 bg-gray-100">
-            <div>
+    <body class="antialiased bg-gradient-to-br from-slate-100 to-indigo-50 text-gray-900">
+        <div class="min-h-screen flex flex-col sm:justify-center items-center pt-6 sm:pt-0 px-4">
+            
+            <div class="mb-6">
                 <a href="/">
-                    <x-application-logo class="w-20 h-20 fill-current text-gray-500" />
+                    <div class="w-14 h-14 rounded-xl bg-indigo-600 flex items-center justify-center shadow-md hover:scale-105 transition-transform">
+                        <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a4 4 0 00-4-4h-1M9 20H4v-2a4 4 0 014-4h1m4-4a4 4 0 100-8 4 4 0 000 8zm6 0a3 3 0 100-6 3 3 0 000 6zM3 20a3 3 0 013-3"/>
+                        </svg>
+                    </div>
                 </a>
             </div>
 
-            <div class="w-full sm:max-w-md mt-6 px-6 py-4 bg-white shadow-md overflow-hidden sm:rounded-lg">
+            <div class="w-full sm:max-w-md bg-white rounded-2xl shadow-xl ring-1 ring-gray-200 px-8 py-10">
                 {{ $slot }}
             </div>
+
+            <p class="text-center text-xs text-gray-400 mt-6">CRM System · Auth Module</p>
         </div>
     </body>
 </html>
