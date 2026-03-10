@@ -31,10 +31,10 @@
                         </div>
                     </div>
 
-                    <div class="mt-8 flex items-center justify-end space-x-4">
+                    <div class="mt-12 pt-8 border-t border-gray-100 flex items-center justify-end space-x-4">
                         <a href="{{ route('customers.index') }}" class="text-sm text-gray-600 hover:underline">Cancel</a>
-                        <x-primary-button class="bg-indigo-600 hover:bg-indigo-700">
-                            Create Customer
+                        <x-primary-button class="bg-indigo-600 hover:bg-indigo-700 px-10 py-4 text-base rounded-xl shadow-lg shadow-indigo-100 transition-all active:scale-95">
+                            {{ __('Create Customer') }}
                         </x-primary-button>
                     </div>
                 </form>
