@@ -15,10 +15,16 @@ class Order extends Model
         'order_number',
         'total_amount',
         'status',
+        'user_id',
     ];
 
     public function customer()
     {
         return $this->belongsTo(Customer::class);
+    }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
     }
 }

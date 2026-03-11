@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use App\Http\Requests\OrderRequest;
 use App\Models\Order;
 use App\Models\Customer;
@@ -79,7 +80,9 @@ class OrderController extends Controller
      */
     public function store(OrderRequest $request)
     {
-        Order::create($request->validated());
+        Order::create(array_merge($request->validated(), [
+            'user_id' => Auth::id()
+        ]));
 
         return redirect()
             ->route('orders.index')
@@ -99,7 +102,8 @@ class OrderController extends Controller
      */
     public function edit(Order $order)
     {
-        $customers = \App\Models\Customer::orderBy('last_name')->get();
+        $this->authorize('update', $order);
+        $customers = Customer::orderBy('last_name')->get();
 
         return view('orders.edit', compact('order', 'customers'));
     }
@@ -109,6 +113,7 @@ class OrderController extends Controller
      */
     public function update(OrderRequest $request, Order $order)
     {
+        $this->authorize('update', $order);
         $order->update($request->validated());
 
         return redirect()->route('orders.index')->with('success', 'Order updated successfully!');
@@ -119,6 +124,8 @@ class OrderController extends Controller
      */
     public function destroy(Order $order)
     {
+        $this->authorize('delete', $order);
+
         $orderNumber = $order->order_number;
         $order->delete();
 

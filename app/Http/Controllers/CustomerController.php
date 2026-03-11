@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use App\Models\Customer;
 use App\Http\Requests\CustomerRequest;
 
@@ -53,7 +54,9 @@ class CustomerController extends Controller
      */
     public function store(CustomerRequest $request)
     {
-        Customer::create($request->validated());
+        Customer::create(array_merge($request->validated(), [
+            'user_id' => Auth::id()
+        ]));
         return redirect()->route('customers.index')->with('success', 'Customer created successfully!');
     }
 
@@ -70,6 +73,8 @@ class CustomerController extends Controller
      */
     public function edit(Customer $customer)
     {
+        $this->authorize('update', $customer);
+
         return view('customers.edit', compact('customer'));
     }
 
@@ -78,6 +83,8 @@ class CustomerController extends Controller
      */
     public function update(CustomerRequest $request, Customer $customer)
     {
+        $this->authorize('update', $customer);
+
         $customer->update($request->validated());
         return redirect()->route('customers.index')->with('success', 'Customer updated successfully!');
     }
@@ -87,6 +94,8 @@ class CustomerController extends Controller
      */
     public function destroy(Customer $customer)
     {
+        $this->authorize('delete', $customer);
+
         $customer->delete();
         return redirect()->route('customers.index')->with('success', 'Customer deleted successfully!');
     }
