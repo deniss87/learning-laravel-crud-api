@@ -3,7 +3,8 @@
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <title>CRM System</title>
+        <title>NEXTCRM</title>
+        <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>👥</text></svg>">
         @vite(['resources/css/app.css', 'resources/js/app.js'])
         <style>
             @import url('https://fonts.googleapis.com/css2?family=Sora:wght@400;600;800&display=swap');

@@ -14,8 +14,8 @@ class CustomerController extends Controller
      */
     public function index(Request $request)
     {
-        $sort = $request->input('sort', 'last_name');
-        $direction = $request->input('direction') === 'desc' ? 'desc' : 'asc';
+        $sort = $request->input('sort', 'created_at');
+        $direction = $request->input('direction') === 'asc' ? 'asc' : 'desc';
         $search = $request->input('search');
 
         $customers = Customer::query()
