@@ -11,7 +11,12 @@ class Customer extends Model
     /** @use HasFactory<\Database\Factories\CustomerFactory> */
     use HasFactory;
 
-    protected $fillable = ['first_name', 'last_name', 'email', 'phone'];
+    protected $fillable = ['first_name', 'last_name', 'email', 'phone', 'user_id'];
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
 
     public function orders()
     {
