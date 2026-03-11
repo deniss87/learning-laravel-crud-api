@@ -22,6 +22,7 @@ class OrderFactory extends Factory
             'order_number' => 'ORD-' . strtoupper(fake()->bothify('??###')),
             'total_amount' => fake()->randomFloat(2, 10, 2000),
             'status' => fake()->randomElement(['pending', 'completed', 'cancelled']),
+            'created_at'   => fake()->dateTimeBetween('-2 year', 'now'),
         ];
     }
 }
