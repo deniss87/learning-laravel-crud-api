@@ -22,8 +22,8 @@
                     </div>
                     
                     <!-- Search -->
-                    <div class="w-full lg:max-w-md">
-                        <form action="{{ route('orders.index') }}" method="GET" class="relative group">
+                    <div class="w-full lg:max-w-md flex gap-2">
+                        <form action="{{ route('orders.index') }}" method="GET" class="relative group flex-1">
                             <input type="hidden" name="sort" value="{{ $sort }}">
                             <input type="hidden" name="direction" value="{{ $direction }}">
 
@@ -56,7 +56,16 @@
                                 </svg>
                             </button>
                         </form>
+
+                    <!-- Filter Button -->
+                    <x-filter-button 
+                          id="filter-btn" 
+                          :active="!empty($selectedStatuses) || $dateFrom || $dateTo" 
+                    />
                     </div>
+
+                    <!-- Filter Modal -->
+                    @include('orders._filter-modal')
 
                     <a href="{{ route('orders.create') }}" 
                        class="inline-flex items-center px-6 py-3 bg-indigo-600 text-white font-semibold rounded-xl shadow-md hover:bg-indigo-700 active:scale-95 transition-all">
@@ -72,5 +81,6 @@
     </div>
     @push('scripts')
         @vite('resources/js/searchInput.js')
+         @vite('resources/js/orderFilters.js')
     @endpush
 </x-app-layout>

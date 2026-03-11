@@ -17,9 +17,13 @@ class OrderController extends Controller
         $sort = $request->input('sort', 'created_at');
         $direction = $request->input('direction') === 'asc' ? 'asc' : 'desc';
         $search = $request->input('search');
+        $selectedStatuses = $request->input('statuses', []);
+        $dateFrom = $request->input('date_from');
+        $dateTo = $request->input('date_to');
 
         $query = Order::query()->with('customer');
 
+        // 1. Live search (by order number or client name)
         if ($search) {
             $searchTerm = '%' . mb_strtolower($search, 'UTF-8') . '%';
             $query->where(function ($q) use ($searchTerm) {
@@ -31,6 +35,16 @@ class OrderController extends Controller
             });
         }
 
+        // 2. Filter by status
+        $query->when($selectedStatuses, function ($q) use ($selectedStatuses) {
+            $q->whereIn('status', $selectedStatuses);
+        });
+
+        // 3. Filter by dates
+        $query->when($dateFrom, fn($q) => $q->whereDate('created_at', '>=', $dateFrom));
+        $query->when($dateTo, fn($q) => $q->whereDate('created_at', '<=', $dateTo));
+
+        // 4. Sorting
         if ($sort === 'customer') {
             $query->join('customers', 'orders.customer_id', '=', 'customers.id')
                   ->orderBy('customers.last_name', $direction)
@@ -41,11 +55,13 @@ class OrderController extends Controller
 
         $orders = $orders = $query->paginate(10)->withQueryString();
 
+        $data = compact('orders', 'sort', 'direction', 'search', 'selectedStatuses', 'dateFrom', 'dateTo');
+
         if ($request->header('HX-Request')) {
-            return view('orders._table', compact('orders', 'sort', 'direction', 'search'));
+            return view('orders._table', $data);
         }
 
-        return view('orders.index', compact('orders', 'direction', 'sort', 'search'));
+        return view('orders.index', $data);
     }
 
     /**
