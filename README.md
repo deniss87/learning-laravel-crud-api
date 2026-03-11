@@ -1,59 +1,201 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Laravel CRM
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+A customer relationship management application built with Laravel 12.  
+Manage clients, track orders, and control access with role-based authorization.
 
-## About Laravel
+## Features
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+- **Authentication** — registration and login via Laravel Breeze
+- **Customer Management** — full CRUD with live search, sorting, and pagination
+- **Order Management** — full CRUD with live search, status/date filters, and sorting
+- **Role-based Authorization** — admin and user roles with Laravel Policies
+- **REST API** — JSON Resource API for customers and orders
+- **Dashboard** — overview stats for customers, orders, and revenue
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## Tech Stack
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+- **Backend:** Laravel 12, PHP 8.3
+- **Frontend:** Blade, Tailwind CSS, HTMX, Vanilla JS, Vite
+- **Database:** PostgreSQL
+- **Auth:** Laravel Breeze
 
-## Learning Laravel
+## Requirements
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework. You can also check out [Laravel Learn](https://laravel.com/learn), where you will be guided through building a modern Laravel application.
+- PHP 8.2+
+- Composer
+- Node.js & npm
+- PostgreSQL
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+## Installation
 
-## Laravel Sponsors
+```bash
+# Clone the repository
+git clone https://github.com/deniss87/learning-laravel-crud-api.git
+cd learning-laravel-crud-api
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+# Install PHP dependencies
+composer install
 
-### Premium Partners
+# Install JS dependencies
+npm install
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+# Copy environment file
+cp .env.example .env
 
-## Contributing
+# Generate application key
+php artisan key:generate
+```
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+Configure your database in `.env`:
 
-## Code of Conduct
+```env
+APP_NAME="NextCRM"
+DB_CONNECTION=pgsql
+DB_HOST=127.0.0.1
+DB_PORT=5432
+DB_DATABASE=laravel_crm
+DB_USERNAME=your_username
+DB_PASSWORD=your_password
+```
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+```bash
+# Run migrations and seed the database
+php artisan migrate:fresh --seed
 
-## Security Vulnerabilities
+# Build assets
+npm run build
+```
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+## Development
 
-## License
+```bash
+# Start development server
+php artisan serve
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+# Start Vite dev server
+npm run dev
+
+# Run with hot reload
+composer run dev
+```
+
+## Default Admin Account
+
+After seeding, an admin account is created automatically:
+
+| Field    | Value          |
+| -------- | -------------- |
+| Email    | admin@mail.com |
+| Password | admin123       |
+| Role     | Administrator  |
+
+## Database Structure
+
+```
+users
+├── id, name, email, password
+├── role (admin / user)
+└── timestamps
+
+customers
+├── id, user_id (FK)
+├── first_name, last_name
+├── email, phone
+└── timestamps
+
+orders
+├── id, customer_id (FK), user_id (FK)
+├── order_number, total_amount
+├── status (pending / processing / completed / cancelled)
+└── timestamps
+```
+
+## Authorization
+
+| Action          | Admin | User (owner) | User (other) |
+| --------------- | ----- | ------------ | ------------ |
+| Delete customer | ✅    | ❌           | ❌           |
+| Edit customer   | ✅    | ✅           | ❌           |
+| Edit order      | ✅    | ✅           | ❌           |
+| Delete order    | ✅    | ❌           | ❌           |
+
+## REST API
+
+All endpoints return JSON. Include `Accept: application/json` header.
+
+### GET /api/customers
+
+Returns a list of all customers.
+
+```bash
+curl http://localhost:8000/api/customers \
+  -H "Accept: application/json"
+```
+
+```json
+{
+    "data": [
+        {
+            "id": 1,
+            "full_name": "John Doe",
+            "email": "john@example.com",
+            "phone": "+371 20000000",
+            "created_at": "2026-01-01"
+        }
+    ]
+}
+```
+
+### GET /api/customers/{id}/orders
+
+Returns all orders for a specific customer.
+
+```bash
+curl http://localhost:8000/api/customers/1/orders \
+  -H "Accept: application/json"
+```
+
+### POST /api/orders
+
+Creates a new order. Returns `201 Created`.
+
+```bash
+curl -X POST http://localhost:8000/api/orders \
+  -H "Content-Type: application/json" \
+  -H "Accept: application/json" \
+  -d '{
+    "customer_id": 1,
+    "order_number": "ORD-001",
+    "total_amount": 150.00,
+    "status": "pending"
+  }'
+```
+
+## Project Structure
+
+```
+app/
+├── Http/
+│   ├── Controllers/
+│   │   ├── Api/               # API controllers
+│   │   ├── CustomerController.php
+│   │   └── OrderController.php
+│   ├── Requests/              # Form validation
+│   └── Resources/             # JSON API resources
+├── Models/
+│   ├── Customer.php
+│   ├── Order.php
+│   └── User.php
+└── Policies/
+    ├── CustomerPolicy.php
+    └── OrderPolicy.php
+
+resources/
+├── js/
+│   ├── searchInput.js         # Reusable live search logic
+│   └── orderFilters.js        # Order filter modal logic
+└── views/
+    ├── components/            # Reusable Blade components
+    ├── customers/
+    └── orders/
+```
