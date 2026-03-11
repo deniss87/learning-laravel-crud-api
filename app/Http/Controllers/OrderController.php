@@ -12,10 +12,40 @@ class OrderController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $orders = Order::with('customer')->latest()->paginate(10);
-        return view('orders.index', compact('orders'));
+        $sort = $request->input('sort', 'created_at');
+        $direction = $request->input('direction') === 'asc' ? 'asc' : 'desc';
+        $search = $request->input('search');
+
+        $query = Order::query()->with('customer');
+
+        if ($search) {
+            $searchTerm = '%' . mb_strtolower($search, 'UTF-8') . '%';
+            $query->where(function ($q) use ($searchTerm) {
+                $q->whereRaw('LOWER(order_number) LIKE ?', [$searchTerm])
+                  ->orWhereHas('customer', function ($q) use ($searchTerm) {
+                      $q->whereRaw('LOWER(first_name) LIKE ?', [$searchTerm])
+                        ->orWhereRaw('LOWER(last_name) LIKE ?', [$searchTerm]);
+                  });
+            });
+        }
+
+        if ($sort === 'customer') {
+            $query->join('customers', 'orders.customer_id', '=', 'customers.id')
+                  ->orderBy('customers.last_name', $direction)
+                  ->select('orders.*');
+        } else {
+            $query->orderBy($sort, $direction);
+        }
+
+        $orders = $orders = $query->paginate(10)->withQueryString();
+
+        if ($request->header('HX-Request')) {
+            return view('orders._table', compact('orders', 'sort', 'direction', 'search'));
+        }
+
+        return view('orders.index', compact('orders', 'direction', 'sort', 'search'));
     }
 
     /**

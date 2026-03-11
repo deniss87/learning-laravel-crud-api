@@ -11,11 +11,33 @@ class CustomerController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $customers = Customer::paginate(10);
+        $sort = $request->input('sort', 'last_name');
+        $direction = $request->input('direction') === 'desc' ? 'desc' : 'asc';
+        $search = $request->input('search');
 
-        return view('customers.index', compact('customers'));
+        $customers = Customer::query()
+          ->when($search, function ($query, $search) {
+
+              $searchTerm = '%' . mb_strtolower($search, 'UTF-8') . '%';
+
+              $query->where(function ($q) use ($searchTerm) {
+                  $q->whereRaw('LOWER(first_name) LIKE ?', [$searchTerm])
+                    ->orWhereRaw('LOWER(last_name) LIKE ?', [$searchTerm])
+                    ->orWhereRaw('LOWER(email) LIKE ?', [$searchTerm])
+                    ->orWhereRaw('phone LIKE ?', [$searchTerm]);
+              });
+          })
+          ->orderBy($sort, $direction)
+          ->paginate(10)
+          ->withQueryString();
+
+        if ($request->header('HX-Request')) {
+            return view('customers._table', compact('customers', 'sort', 'direction', 'search'));
+        }
+
+        return view('customers.index', compact('customers', 'direction', 'sort', 'search'));
     }
 
     /**
