@@ -4,13 +4,6 @@
 <x-app-layout>
     <div class="py-12">
         <div class="max-w-3xl mx-auto sm:px-6 lg:px-8">
-            
-            <div class="mb-6">
-                <a href="{{ route('orders.index') }}" class="text-sm text-indigo-600 hover:text-indigo-800 flex items-center transition">
-                    <svg class="w-4 h-4 me-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/></svg>
-                    Back to Orders
-                </a>
-            </div>
 
             <div class="bg-white rounded-2xl shadow-xl ring-1 ring-gray-200 p-8 md:p-12">
                 <h2 class="text-3xl font-extrabold text-gray-900 mb-8">Create New Order</h2>
