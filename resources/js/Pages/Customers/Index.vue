@@ -73,7 +73,7 @@ const getInitials = (customer) => {
 
             <div class="overflow-x-auto">
                 <table
-                    class="min-w-full divide-y divide-gray-100 border-b border-gray-100 mb-6"
+                    class="min-w-full divide-y divide-gray-100 border-b border-gray-100"
                 >
                     <thead>
                         <tr class="bg-gray-50/50">
@@ -196,19 +196,8 @@ const getInitials = (customer) => {
                 </table>
             </div>
 
-            <div
-                class="mt-4 flex flex-col sm:flex-row justify-between items-center gap-4"
-            >
-                <div class="text-sm text-gray-500 font-medium">
-                    Showing
-                    <span class="text-gray-900">{{ customers.from || 0 }}</span>
-                    to
-                    <span class="text-gray-900">{{ customers.to || 0 }}</span>
-                    of
-                    <span class="text-gray-900">{{ customers.total }}</span>
-                    clients
-                </div>
-                <Pagination :links="customers.links" />
+            <div class="mt-2">
+                <Pagination :meta="customers" />
             </div>
         </div>
     </AuthenticatedLayout>

@@ -1,6 +1,7 @@
 <script setup>
 import { ref } from "vue";
 import { Link } from "@inertiajs/vue3";
+import FlashMessage from "@/Components/FlashMessage.vue";
 
 const showingNavigationDropdown = ref(false);
 </script>
@@ -99,6 +100,7 @@ const showingNavigationDropdown = ref(false);
         <main>
             <div class="py-12">
                 <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+                    <FlashMessage />
                     <slot />
                 </div>
             </div>

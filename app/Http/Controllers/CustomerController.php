@@ -40,8 +40,8 @@ class CustomerController extends Controller
         // }
 
         // return view('customers.index', compact('customers', 'direction', 'sort', 'search'));
-        $sort = $request->input('sort', 'last_name');
-        $direction = $request->input('direction', 'asc');
+        $sort = $request->input('sort', 'created_at');
+        $direction = $request->input('direction') === 'asc' ? 'asc' : 'desc';
         $search = $request->input('search');
 
         $customers = Customer::query()
@@ -71,7 +71,8 @@ class CustomerController extends Controller
      */
     public function create()
     {
-        return view('customers.create');
+        // return view('customers.create');
+        return Inertia::render('Customers/Create');
     }
 
     /**
@@ -100,7 +101,10 @@ class CustomerController extends Controller
     {
         $this->authorize('update', $customer);
 
-        return view('customers.edit', compact('customer'));
+        // return view('customers.edit', compact('customer'));
+        return Inertia::render('Customers/Edit', [
+            'customer' => $customer
+        ]);
     }
 
     /**

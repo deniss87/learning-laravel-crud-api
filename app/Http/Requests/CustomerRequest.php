@@ -25,7 +25,12 @@ class CustomerRequest extends FormRequest
             'first_name' => 'required|string|max:255',
             'last_name'  => 'required|string|max:255',
             'email'      => 'required|email|unique:customers,email,' . ($this->customer?->id ?? 'NULL'),
-            'phone'      => 'nullable|string|max:20',
+            'phone'      => [
+                'nullable',
+                'string',
+                'max:20',
+                'regex:/^([0-9\s\-\+\(\)]*)$/'
+            ],
         ];
     }
 }
