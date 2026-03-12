@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Inertia\Inertia;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Customer;
@@ -14,8 +15,33 @@ class CustomerController extends Controller
      */
     public function index(Request $request)
     {
-        $sort = $request->input('sort', 'created_at');
-        $direction = $request->input('direction') === 'asc' ? 'asc' : 'desc';
+        // $sort = $request->input('sort', 'created_at');
+        // $direction = $request->input('direction') === 'asc' ? 'asc' : 'desc';
+        // $search = $request->input('search');
+
+        // $customers = Customer::query()
+        //   ->when($search, function ($query, $search) {
+
+        //       $searchTerm = '%' . mb_strtolower($search, 'UTF-8') . '%';
+
+        //       $query->where(function ($q) use ($searchTerm) {
+        //           $q->whereRaw('LOWER(first_name) LIKE ?', [$searchTerm])
+        //             ->orWhereRaw('LOWER(last_name) LIKE ?', [$searchTerm])
+        //             ->orWhereRaw('LOWER(email) LIKE ?', [$searchTerm])
+        //             ->orWhereRaw('phone LIKE ?', [$searchTerm]);
+        //       });
+        //   })
+        //   ->orderBy($sort, $direction)
+        //   ->paginate(10)
+        //   ->withQueryString();
+
+        // if ($request->header('HX-Request')) {
+        //     return view('customers._table', compact('customers', 'sort', 'direction', 'search'));
+        // }
+
+        // return view('customers.index', compact('customers', 'direction', 'sort', 'search'));
+        $sort = $request->input('sort', 'last_name');
+        $direction = $request->input('direction', 'asc');
         $search = $request->input('search');
 
         $customers = Customer::query()
@@ -34,11 +60,10 @@ class CustomerController extends Controller
           ->paginate(10)
           ->withQueryString();
 
-        if ($request->header('HX-Request')) {
-            return view('customers._table', compact('customers', 'sort', 'direction', 'search'));
-        }
-
-        return view('customers.index', compact('customers', 'direction', 'sort', 'search'));
+        return Inertia::render('Customers/Index', [
+            'customers' => $customers,
+            'filters' => $request->only(['search', 'sort', 'direction']),
+        ]);
     }
 
     /**
