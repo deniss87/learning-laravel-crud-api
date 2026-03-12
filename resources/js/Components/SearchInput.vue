@@ -28,7 +28,7 @@ watch(
 // The function of the query itself
 const performSearch = (value) => {
     router.get(
-        props.routeName,
+        route(props.routeName),
         { search: value },
         {
             preserveState: true,

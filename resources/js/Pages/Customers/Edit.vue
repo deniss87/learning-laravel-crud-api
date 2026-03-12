@@ -40,7 +40,7 @@ const updateCustomer = () => {
                 >
                     <template #actions-left>
                         <Link
-                            href="/customers"
+                            :href="route('customers.index')"
                             class="text-sm font-semibold text-gray-500 hover:text-gray-700"
                         >
                             Cancel

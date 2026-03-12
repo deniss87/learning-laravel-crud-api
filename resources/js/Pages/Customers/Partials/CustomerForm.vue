@@ -1,4 +1,5 @@
 <script setup>
+import { Link } from "@inertiajs/vue3";
 defineProps({
     form: Object,
     submitLabel: {
@@ -102,16 +103,26 @@ defineEmits(["submit"]);
         </div>
 
         <div
-            class="flex items-center justify-end gap-4 mt-8 pt-6 border-t border-gray-50"
+            class="mt-12 pt-8 border-t border-gray-100 flex items-center justify-end space-x-6"
         >
-            <slot name="actions-left" />
+            <Link
+                :href="route('customers.index')"
+                class="text-sm font-bold text-gray-500 hover:text-gray-600 transition-colors uppercase tracking-widest"
+            >
+                Cancel
+            </Link>
+
             <button
                 type="submit"
                 :disabled="form.processing"
                 :class="{ 'opacity-50 cursor-not-allowed': form.processing }"
                 class="px-8 py-3 bg-indigo-600 text-white rounded-xl font-bold shadow-md hover:bg-indigo-700 transition-all"
             >
-                {{ form.processing ? "Saving..." : submitLabel }}
+                <span
+                    v-if="form.processing"
+                    class="animate-spin inline-block w-4 h-4 border-2 border-white/30 border-t-white rounded-full"
+                ></span>
+                {{ submitLabel }}
             </button>
         </div>
     </form>

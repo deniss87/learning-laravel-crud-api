@@ -30,14 +30,6 @@ const createCustomer = () => {
                     submitLabel="Create Customer"
                     @submit="createCustomer"
                 >
-                    <template #actions-left>
-                        <Link
-                            href="/customers"
-                            class="text-sm font-semibold text-gray-500 hover:text-gray-700 transition-colors"
-                        >
-                            Cancel
-                        </Link>
-                    </template>
                 </CustomerForm>
             </div>
         </div>
