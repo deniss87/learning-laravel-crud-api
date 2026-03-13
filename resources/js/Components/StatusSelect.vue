@@ -13,6 +13,7 @@ const wrapper = ref(null);
 
 const statuses = [
     { value: "pending", label: "Pending", color: "bg-yellow-500" },
+    { value: "processing", label: "Processing", color: "bg-blue-500" },
     { value: "completed", label: "Completed", color: "bg-green-500" },
     { value: "cancelled", label: "Cancelled", color: "bg-red-500" },
 ];

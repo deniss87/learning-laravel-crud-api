@@ -32,7 +32,7 @@ class OrderRequest extends FormRequest
                 Rule::unique('orders', 'order_number')->ignore($this->route('order')),
             ],
             'total_amount' => ['required', 'numeric', 'min:0'],
-            'status'       => ['required', 'in:pending,completed,cancelled'],
+            'status'       => ['required', 'in:pending,processing,completed,cancelled'],
         ];
     }
 }

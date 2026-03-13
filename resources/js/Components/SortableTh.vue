@@ -8,6 +8,10 @@ const props = defineProps({
     currentSort: String,
     currentDirection: String,
     queryParams: Object,
+    align: {
+        type: String,
+        default: "left",
+    },
 });
 
 const isActive = computed(() => props.currentSort === props.field);
@@ -22,15 +26,31 @@ const sortLink = computed(() => {
         direction: nextDirection.value,
     };
 });
+
+const alignmentClasses = computed(() => {
+    return (
+        {
+            left: { th: "text-left", flex: "justify-start" },
+            center: { th: "text-center", flex: "justify-center" },
+            right: { th: "text-right", flex: "justify-end" },
+        }[props.align] || { th: "text-left", flex: "justify-start" }
+    );
+});
 </script>
 
 <template>
     <th
-        class="px-6 py-4 text-left text-xs font-bold text-gray-400 uppercase tracking-widest"
+        :class="[
+            'px-6 py-4 text-xs font-bold text-gray-400 uppercase tracking-widest',
+            alignmentClasses.th,
+        ]"
     >
         <Link
             :href="route('orders.index', sortLink)"
-            class="flex items-center gap-1 hover:text-indigo-600 transition-colors group"
+            :class="[
+                'inline-flex items-center gap-1 hover:text-indigo-600 transition-colors group',
+                alignmentClasses.flex,
+            ]"
         >
             {{ label }}
             <span class="flex flex-col opacity-40 group-hover:opacity-100">

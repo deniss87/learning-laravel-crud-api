@@ -1,13 +1,26 @@
 <script setup>
+import { ref, computed } from "vue";
 import { Head, Link, router } from "@inertiajs/vue3";
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout.vue";
 import SearchInput from "@/Components/SearchInput.vue";
 import Pagination from "@/Components/Pagination.vue";
 import SortableTh from "@/Components/SortableTh.vue";
+import FilterButton from "@/Components/FilterButton.vue";
+import OrderFilterModal from "./Partials/OrderFilterModal.vue";
 
 const props = defineProps({
     orders: Object,
     filters: Object,
+});
+
+const isFilterModalOpen = ref(false);
+
+const isFilterActive = computed(() => {
+    return (
+        props.filters.statuses?.length > 0 ||
+        !!props.filters.date_from ||
+        !!props.filters.date_to
+    );
 });
 
 const deleteOrder = (id) => {
@@ -18,6 +31,7 @@ const deleteOrder = (id) => {
 
 const getStatusClass = (status) => {
     const classes = {
+        processing: "bg-blue-100 text-blue-700",
         completed: "bg-green-100 text-green-700",
         pending: "bg-yellow-100 text-yellow-700",
     };
@@ -47,7 +61,18 @@ const getStatusClass = (status) => {
                         routeName="orders.index"
                         placeholder="Order number or customer name..."
                     />
+
+                    <FilterButton
+                        :active="isFilterActive"
+                        @click="isFilterModalOpen = true"
+                    />
                 </div>
+
+                <OrderFilterModal
+                    :show="isFilterModalOpen"
+                    :filters="filters"
+                    @close="isFilterModalOpen = false"
+                />
 
                 <Link
                     :href="route('orders.create')"
@@ -105,6 +130,7 @@ const getStatusClass = (status) => {
                             <SortableTh
                                 field="created_at"
                                 label="Date"
+                                align="center"
                                 :currentSort="filters.sort"
                                 :currentDirection="filters.direction"
                                 :queryParams="filters"
@@ -146,13 +172,13 @@ const getStatusClass = (status) => {
                             <td class="px-6 py-4 whitespace-nowrap">
                                 <span
                                     :class="getStatusClass(order.status)"
-                                    class="px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider"
+                                    class="px-3 py-2 rounded-full text-[10px] font-bold uppercase tracking-wider"
                                 >
                                     {{ order.status }}
                                 </span>
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap">
-                                <div class="flex flex-col items-start">
+                                <div class="flex flex-col items-center">
                                     <span class="font-medium text-gray-900">{{
                                         new Date(
                                             order.created_at,
@@ -166,6 +192,7 @@ const getStatusClass = (status) => {
                                             ).toLocaleTimeString([], {
                                                 hour: "2-digit",
                                                 minute: "2-digit",
+                                                hour12: false,
                                             })
                                         }}</span
                                     >
