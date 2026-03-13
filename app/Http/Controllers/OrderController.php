@@ -16,6 +16,8 @@ class OrderController extends Controller
      */
     public function index(Request $request)
     {
+        $user = Auth::user();
+
         $sort = $request->input('sort', 'created_at');
         $direction = $request->input('direction') === 'asc' ? 'asc' : 'desc';
         $search = $request->input('search');
@@ -56,7 +58,13 @@ class OrderController extends Controller
         }
 
         return Inertia::render('Orders/Index', [
-            'orders' => $query->paginate(10)->withQueryString(),
+            'orders' => $query->paginate(10)->withQueryString()->through(fn($order) => [
+                ...$order->toArray(),
+                'can' => [
+                    'edit'   => $user->can('update', $order),
+                    'delete' => $user->can('delete', $order),
+                ]
+            ]),
             'filters' => [
                 'search' => $search,
                 'sort' => $sort,

@@ -201,6 +201,7 @@ const getStatusClass = (status) => {
                             <td class="px-6 py-4 whitespace-nowrap text-center">
                                 <div class="flex justify-center gap-2">
                                     <Link
+                                        v-if="order.can.edit"
                                         :href="route('orders.edit', order.id)"
                                         class="p-2 text-gray-400 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition-all"
                                     >
@@ -219,6 +220,7 @@ const getStatusClass = (status) => {
                                         </svg>
                                     </Link>
                                     <button
+                                        v-if="order.can.delete"
                                         @click="deleteOrder(order.id)"
                                         class="p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-all"
                                     >
