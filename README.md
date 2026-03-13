@@ -15,7 +15,7 @@ Manage clients, track orders, and control access with role-based authorization.
 ## Tech Stack
 
 - **Backend:** Laravel 12, PHP 8.3
-- **Frontend:** Blade, Tailwind CSS, HTMX, Vanilla JS, Vite
+- **Frontend:** Vue 3, Inertia.js, Tailwind CSS, Vite
 - **Database:** PostgreSQL
 - **Auth:** Laravel Breeze
 
@@ -117,7 +117,7 @@ orders
 | Delete customer | ✅    | ❌           | ❌           |
 | Edit customer   | ✅    | ✅           | ❌           |
 | Edit order      | ✅    | ✅           | ❌           |
-| Delete order    | ✅    | ❌           | ❌           |
+| Delete order    | ✅    | ✅           | ❌           |
 
 ## REST API
 
@@ -177,11 +177,11 @@ curl -X POST http://localhost:8000/api/orders \
 app/
 ├── Http/
 │   ├── Controllers/
-│   │   ├── Api/               # API controllers
+│   │   ├── Api/                    # API controllers
 │   │   ├── CustomerController.php
 │   │   └── OrderController.php
-│   ├── Requests/              # Form validation
-│   └── Resources/             # JSON API resources
+│   ├── Requests/                   # Form validation
+│   └── Resources/                  # JSON API resources
 ├── Models/
 │   ├── Customer.php
 │   ├── Order.php
@@ -191,11 +191,28 @@ app/
     └── OrderPolicy.php
 
 resources/
-├── js/
-│   ├── searchInput.js         # Reusable live search logic
-│   └── orderFilters.js        # Order filter modal logic
-└── views/
-    ├── components/            # Reusable Blade components
-    ├── customers/
-    └── orders/
+└── js/
+    ├── Components/
+    │   ├── CustomerForm.vue        # Shared form for Create/Edit
+    │   ├── OrderForm.vue           # Shared form for Create/Edit
+    │   ├── OrderFilterModal.vue    # Filter modal with status and date range
+    │   ├── FilterButton.vue        # Filter toggle with active state indicator
+    │   ├── SearchableSelect.vue    # Customer dropdown with live search
+    │   ├── StatusSelect.vue        # Styled status dropdown with color indicators
+    │   ├── SearchInput.vue         # Debounced search with clear button
+    │   ├── FlashMessage.vue        # Auto-dismiss notifications (3s)
+    │   ├── Pagination.vue          # Arrow-based pagination with page indicator
+    │   └── SortableTh.vue          # Sortable column header
+    ├── Layouts/
+    │   └── AuthenticatedLayout.vue
+    └── Pages/
+        ├── Dashboard.vue
+        ├── Customers/
+        │   ├── Index.vue
+        │   ├── Create.vue
+        │   └── Edit.vue
+        └── Orders/
+            ├── Index.vue
+            ├── Create.vue
+            └── Edit.vue
 ```
