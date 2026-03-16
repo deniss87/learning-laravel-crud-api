@@ -26,27 +26,75 @@ Manage clients, track orders, and control access with role-based authorization.
 - Node.js & npm
 - PostgreSQL
 
-## Installation
+## Getting Started
+
+<details>
+<summary><strong>Option 1 — Docker (recommended)</strong></summary><br>
+
+**Requirements:** Docker, Docker Compose
 
 ```bash
 # Clone the repository
 git clone https://github.com/deniss87/learning-laravel-crud-api.git
 cd learning-laravel-crud-api
 
-# Install PHP dependencies
-composer install
-
-# Install JS dependencies
-npm install
-
 # Copy environment file
 cp .env.example .env
 
 # Generate application key
 php artisan key:generate
+
+# Build and start all containers
+# Migrations and seeding run automatically
+docker compose up -d --build
 ```
 
-Configure your database in `.env`:
+The application will be available at **http://localhost:8000**
+
+To view logs:
+
+```bash
+docker compose logs -f app
+```
+
+To stop:
+
+```bash
+docker compose down
+```
+
+</details>
+
+<details>
+<summary><strong>Option 2 — Manual Setup</strong></summary><br>
+
+**Requirements:** PHP 8.2+, Composer, Node.js & npm, PostgreSQL
+
+#### 1. Clone and install dependencies
+
+```bash
+git clone https://github.com/deniss87/learning-laravel-crud-api.git
+cd learning-laravel-crud-api
+
+composer install
+npm install
+
+cp .env.example .env
+php artisan key:generate
+```
+
+#### 2. Create PostgreSQL database and user
+
+```sql
+CREATE USER laravel WITH PASSWORD 'secret';
+CREATE DATABASE laravel_crm;
+GRANT ALL PRIVILEGES ON DATABASE laravel_crm TO laravel;
+ALTER DATABASE laravel_crm OWNER TO laravel;
+```
+
+Or use your own credentials — just update the `.env` file accordingly.
+
+#### 3. Configure `.env`
 
 ```env
 APP_NAME="NextCRM"
@@ -54,30 +102,27 @@ DB_CONNECTION=pgsql
 DB_HOST=127.0.0.1
 DB_PORT=5432
 DB_DATABASE=laravel_crm
-DB_USERNAME=your_username
-DB_PASSWORD=your_password
+DB_USERNAME=laravel
+DB_PASSWORD=secret
 ```
 
-```bash
-# Run migrations and seed the database
-php artisan migrate:fresh --seed
+#### 4. Run migrations and build assets
 
-# Build assets
+```bash
+php artisan migrate:fresh --seed
 npm run build
 ```
 
-## Development
+#### 5. Start the development server
 
 ```bash
-# Start development server
 php artisan serve
-
-# Start Vite dev server
 npm run dev
-
-# Run with hot reload
-composer run dev
 ```
+
+The application will be available at **http://localhost:8000**
+
+</details>
 
 ## Default Admin Account
 
@@ -174,24 +219,31 @@ curl -X POST http://localhost:8000/api/orders \
 ## Project Structure
 
 ```
-app/
-├── Http/
-│   ├── Controllers/
-│   │   ├── Api/                    # API controllers
-│   │   ├── CustomerController.php
-│   │   └── OrderController.php
-│   ├── Requests/                   # Form validation
-│   └── Resources/                  # JSON API resources
-├── Models/
-│   ├── Customer.php
-│   ├── Order.php
-│   └── User.php
-└── Policies/
-    ├── CustomerPolicy.php
-    └── OrderPolicy.php
+|── docker-compose.yml                  # Docker compose configuration
+└── docker/
+    ├── nginx/
+    │   └── default.conf                # Nginx server configuration
+    └── php/
+        ├── Dockerfile                  # Builds the PHP-FPM image
+        └── entrypoint.sh               # Executes migrations and seeding
+└── app/
+    ├── Http/
+    │   ├── Controllers/
+    │   │   ├── Api/                    # API controllers
+    │   │   ├── CustomerController.php
+    │   │   └── OrderController.php
+    │   ├── Requests/                   # Form validation
+    │   └── Resources/                  # JSON API resources
+    ├── Models/
+    │   ├── Customer.php
+    │   ├── Order.php
+    │   └── User.php
+    └── Policies/
+        ├── CustomerPolicy.php
+        └── OrderPolicy.php
 
-resources/
-└── js/
+└── resources/
+    └── js/
     ├── Components/
     │   ├── CustomerForm.vue        # Shared form for Create/Edit
     │   ├── OrderForm.vue           # Shared form for Create/Edit
@@ -215,4 +267,5 @@ resources/
             ├── Index.vue
             ├── Create.vue
             └── Edit.vue
+
 ```

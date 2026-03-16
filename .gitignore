@@ -18,6 +18,8 @@
 /public/storage
 /storage/*.key
 /storage/pail
+storage/logs/*
+storage/framework/cache/*
 /vendor
 Homestead.json
 Homestead.yaml
@@ -27,6 +29,7 @@ _ide_helper.php
 _ide_helper_models.php
 .tsbuildinfo
 desktop.ini
+vendor
 
 # Logs npm/yarn
 npm-debug.log*
