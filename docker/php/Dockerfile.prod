@@ -1,0 +1,66 @@
+# --- Stage 1: Node.js ---
+FROM node:20-alpine AS frontend_builder
+WORKDIR /app
+COPY package*.json ./
+RUN npm install
+COPY . .
+RUN npm run build
+
+# --- Stage 2: PHP  ---
+FROM php:8.3-fpm-alpine
+
+# Installing system dependencies
+RUN apk add --no-cache \
+    postgresql-dev \
+    libzip-dev \
+    zip \
+    unzip \
+    git \
+    curl \
+    dos2unix
+
+# Installing PHP extensions
+RUN docker-php-ext-install \
+    pdo \
+    pdo_pgsql \
+    zip \
+    opcache
+
+# Opcache configuration
+RUN { \
+    echo "opcache.enable=1"; \
+    echo "opcache.memory_consumption=256"; \
+    echo "opcache.max_accelerated_files=20000"; \
+    echo "opcache.validate_timestamps=0"; \
+    } > /usr/local/etc/php/conf.d/opcache.ini
+
+# Installing Composer
+COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
+
+WORKDIR /var/www
+
+# 1. Copy only the composer files for caching layers.
+COPY composer.json composer.lock ./
+RUN composer install --no-dev --optimize-autoloader --no-interaction --no-scripts
+
+# 2. Copy the entire project
+COPY . .
+
+# 3. Copy the assembled frontend from Stage 1
+COPY --from=frontend_builder /app/public/build ./public/build
+
+# Completing the installation (startup scripts)
+RUN composer install --no-dev --optimize-autoloader --no-interaction
+
+# Setting up rights
+RUN chmod -R 775 storage bootstrap/cache \
+    && chown -R www-data:www-data /var/www
+
+# Preparing the entrypoint
+COPY docker/php/entrypoint.sh /usr/local/bin/entrypoint.sh
+RUN dos2unix /usr/local/bin/entrypoint.sh \
+    && chmod +x /usr/local/bin/entrypoint.sh
+
+EXPOSE 9000
+
+ENTRYPOINT ["entrypoint.sh"]
