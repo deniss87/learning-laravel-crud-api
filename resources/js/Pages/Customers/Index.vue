@@ -142,12 +142,13 @@ const getInitials = (customer) => {
                                     class="flex justify-end gap-3 opacity-80 group-hover:opacity-100 transition-opacity"
                                 >
                                     <Link
+                                        v-if="customer.can.edit"
                                         :href="`/customers/${customer.id}/edit`"
                                         class="p-2 bg-slate-50 text-slate-400 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition-all"
                                         title="Edit Customer"
                                     >
                                         <svg
-                                            class="w-5 h-5"
+                                            class="w-4 h-4"
                                             fill="none"
                                             stroke="currentColor"
                                             viewBox="0 0 24 24"
@@ -162,12 +163,13 @@ const getInitials = (customer) => {
                                     </Link>
 
                                     <button
+                                        v-if="customer.can.delete"
                                         @click="deleteCustomer(customer.id)"
                                         class="p-2 bg-slate-50 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-all"
                                         title="Delete Customer"
                                     >
                                         <svg
-                                            class="w-5 h-5"
+                                            class="w-4 h-4"
                                             fill="none"
                                             stroke="currentColor"
                                             viewBox="0 0 24 24"
