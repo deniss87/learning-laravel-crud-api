@@ -26,5 +26,10 @@ echo "=== Clearing cache ==="
 php artisan config:clear
 php artisan cache:clear
 
+echo "----------------------------------------------------------"
+echo "🚀 NextCRM is ready!"
+echo "🌐 The application is running on: http://localhost:8000"
+echo "----------------------------------------------------------"
+
 echo "=== Starting PHP-FPM ==="
 exec php-fpm

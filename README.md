@@ -39,7 +39,11 @@ git clone https://github.com/deniss87/learning-laravel-crud-api.git
 cd learning-laravel-crud-api
 
 # Copy environment file
-cp .env.example .env
+cp .env.docker.example .env
+
+# Install dependencies
+composer install
+npm install
 
 # Generate application key
 php artisan key:generate
