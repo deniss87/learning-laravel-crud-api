@@ -131,7 +131,7 @@ After seeding, an admin account is created automatically:
 | Field    | Value          |
 | -------- | -------------- |
 | Email    | admin@mail.com |
-| Password | admin123       |
+| Password | Admin1234      |
 | Role     | Administrator  |
 
 ## Database Structure

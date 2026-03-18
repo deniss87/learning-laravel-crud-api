@@ -10,9 +10,11 @@ rm -rf storage/framework/views/*.php
 chown -R www-data:www-data /var/www/storage /var/www/bootstrap/cache
 chmod -R 775 /var/www/storage /var/www/bootstrap/cache
 
-echo "=== Syncing static assets ==="
-mkdir -p /var/www/public_shared
-cp -rp /var/www/public/. /var/www/public_shared/
+if [ "$APP_ENV" = "production" ]; then
+    echo "=== Syncing static assets for Production ==="
+    mkdir -p /var/www/public_shared
+    cp -rp /var/www/public/. /var/www/public_shared/
+fi
 
 echo "=== Running migrations ==="
 php artisan migrate --force
