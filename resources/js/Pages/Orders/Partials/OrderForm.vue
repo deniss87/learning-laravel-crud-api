@@ -2,6 +2,7 @@
 import SearchableSelect from "@/Components/SearchableSelect.vue";
 import StatusSelect from "@/Components/StatusSelect.vue";
 import { Link } from "@inertiajs/vue3";
+import AppButton from "@/Components/AppButton.vue";
 
 defineProps({
     form: Object,
@@ -91,18 +92,13 @@ defineEmits(["submit"]);
                 Cancel
             </Link>
 
-            <button
-                type="submit"
-                :disabled="form.processing"
-                :class="{ 'opacity-50 cursor-not-allowed': form.processing }"
-                class="px-8 py-3 bg-indigo-600 text-white rounded-xl font-bold shadow-md hover:bg-indigo-700 transition-all"
-            >
+            <AppButton type="submit" :disabled="form.processing">
                 <span
                     v-if="form.processing"
                     class="animate-spin inline-block w-4 h-4 border-2 border-white/30 border-t-white rounded-full"
                 ></span>
                 {{ submitLabel }}
-            </button>
+            </AppButton>
         </div>
     </form>
 </template>

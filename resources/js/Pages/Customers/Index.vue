@@ -3,6 +3,7 @@ import { Head, Link, router } from "@inertiajs/vue3";
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout.vue";
 import SearchInput from "@/Components/SearchInput.vue";
 import Pagination from "@/Components/Pagination.vue";
+import AppButton from "@/Components/AppButton.vue";
 
 const props = defineProps({
     customers: Object,
@@ -49,25 +50,9 @@ const getInitials = (customer) => {
                 />
 
                 <div class="w-full md:w-auto text-right">
-                    <Link
-                        :href="route('customers.create')"
-                        class="inline-flex items-center px-6 py-3 bg-indigo-600 text-white font-semibold rounded-xl shadow-md hover:bg-indigo-700 active:scale-95 transition-all"
-                    >
-                        <svg
-                            class="w-5 h-5 me-2"
-                            fill="none"
-                            stroke="currentColor"
-                            viewBox="0 0 24 24"
-                        >
-                            <path
-                                stroke-linecap="round"
-                                stroke-linejoin="round"
-                                stroke-width="2"
-                                d="M12 6v6m0 0v6m0-6h6m-6 0H6"
-                            />
-                        </svg>
+                    <AppButton :href="route('customers.create')">
                         Add Customer
-                    </Link>
+                    </AppButton>
                 </div>
             </div>
 

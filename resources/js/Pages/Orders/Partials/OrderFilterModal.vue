@@ -1,6 +1,7 @@
 <script setup>
 import { reactive, watch } from "vue";
 import { router } from "@inertiajs/vue3";
+import AppButton from "@/Components/AppButton.vue";
 
 const props = defineProps({
     show: Boolean,
