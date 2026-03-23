@@ -18,7 +18,30 @@
 /public/storage
 /storage/*.key
 /storage/pail
+storage/logs/*
+storage/framework/cache/*
 /vendor
 Homestead.json
 Homestead.yaml
 Thumbs.db
+structure.txt
+_ide_helper.php
+_ide_helper_models.php
+.tsbuildinfo
+desktop.ini
+vendor
+
+# Logs npm/yarn
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+
+/bootstrap/cache/*
+!/bootstrap/cache/.gitignore
+.laravel- sail.lock
+
+.phpunit.result.cache
+.php-cs-fixer.cache
+
+.env.prod

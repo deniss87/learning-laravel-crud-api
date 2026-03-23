@@ -1,0 +1,77 @@
+services:
+  app:
+    build:
+      context: .
+      dockerfile: docker/php/Dockerfile
+    container_name: crm_app
+    restart: unless-stopped
+    working_dir: /var/www
+    environment:
+      APP_ENV: local
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_DATABASE: laravel_crm
+      DB_USERNAME: laravel
+      DB_PASSWORD: secret
+      VITE_PORT: 5173
+    volumes:
+      - .:/var/www
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - crm_network
+
+  nginx:
+    image: nginx:alpine
+    container_name: crm_nginx
+    restart: unless-stopped
+    ports:
+      - "8000:80"
+    volumes:
+      - .:/var/www
+      - ./docker/nginx/default.conf:/etc/nginx/conf.d/default.conf
+    depends_on:
+      - app
+    networks:
+      - crm_network
+
+  postgres:
+    image: postgres:16-alpine
+    container_name: crm_postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: laravel_crm
+      POSTGRES_USER: laravel
+      POSTGRES_PASSWORD: secret
+    ports:
+      - "5433:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U laravel -d laravel_crm"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    networks:
+      - crm_network
+
+  node:
+    image: node:20-alpine
+    container_name: crm_node
+    restart: unless-stopped
+    working_dir: /var/www
+    ports:
+      - "5173:5173"
+    volumes:
+      - .:/var/www
+    command: sh -c "npm install && npm run dev -- --host"
+    networks:
+      - crm_network
+
+networks:
+  crm_network:
+    driver: bridge
+
+volumes:
+  postgres_data:

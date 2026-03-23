@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Inertia\Inertia;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Requests\OrderRequest;
@@ -15,6 +16,8 @@ class OrderController extends Controller
      */
     public function index(Request $request)
     {
+        $user = Auth::user();
+
         $sort = $request->input('sort', 'created_at');
         $direction = $request->input('direction') === 'asc' ? 'asc' : 'desc';
         $search = $request->input('search');
@@ -54,15 +57,23 @@ class OrderController extends Controller
             $query->orderBy($sort, $direction);
         }
 
-        $orders = $orders = $query->paginate(10)->withQueryString();
-
-        $data = compact('orders', 'sort', 'direction', 'search', 'selectedStatuses', 'dateFrom', 'dateTo');
-
-        if ($request->header('HX-Request')) {
-            return view('orders._table', $data);
-        }
-
-        return view('orders.index', $data);
+        return Inertia::render('Orders/Index', [
+            'orders' => $query->paginate(10)->withQueryString()->through(fn($order) => [
+                ...$order->toArray(),
+                'can' => [
+                    'edit'   => $user->can('update', $order),
+                    'delete' => $user->can('delete', $order),
+                ]
+            ]),
+            'filters' => [
+                'search' => $search,
+                'sort' => $sort,
+                'direction' => $direction,
+                'statuses' => $selectedStatuses,
+                'date_from' => $dateFrom,
+                'date_to' => $dateTo,
+            ]
+        ]);
     }
 
     /**
@@ -70,9 +81,9 @@ class OrderController extends Controller
      */
     public function create()
     {
-        $customers = Customer::orderBy('last_name')->get();
-
-        return view('orders.create', compact('customers'));
+        return Inertia::render('Orders/Create', [
+            'customers' => Customer::orderBy('last_name')->get(['id', 'first_name', 'last_name', 'email'])
+        ]);
     }
 
     /**
@@ -103,9 +114,10 @@ class OrderController extends Controller
     public function edit(Order $order)
     {
         $this->authorize('update', $order);
-        $customers = Customer::orderBy('last_name')->get();
-
-        return view('orders.edit', compact('order', 'customers'));
+        return Inertia::render('Orders/Edit', [
+            'order' => $order,
+            'customers' => Customer::orderBy('last_name')->get(['id', 'first_name', 'last_name', 'email']),
+        ]);
     }
 
     /**

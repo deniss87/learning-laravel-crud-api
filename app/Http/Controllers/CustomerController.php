@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Inertia\Inertia;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Customer;
@@ -14,6 +15,8 @@ class CustomerController extends Controller
      */
     public function index(Request $request)
     {
+        $user = Auth::user();
+
         $sort = $request->input('sort', 'created_at');
         $direction = $request->input('direction') === 'asc' ? 'asc' : 'desc';
         $search = $request->input('search');
@@ -34,11 +37,16 @@ class CustomerController extends Controller
           ->paginate(10)
           ->withQueryString();
 
-        if ($request->header('HX-Request')) {
-            return view('customers._table', compact('customers', 'sort', 'direction', 'search'));
-        }
-
-        return view('customers.index', compact('customers', 'direction', 'sort', 'search'));
+        return Inertia::render('Customers/Index', [
+            'customers' => $customers->through(fn($customer) => [
+              ...$customer->toArray(),
+              'can' => [
+                  'edit'   => $user->can('update', $customer),
+                  'delete' => $user->can('delete', $customer),
+              ]
+            ]),
+            'filters' => $request->only(['search', 'sort', 'direction']),
+        ]);
     }
 
     /**
@@ -46,7 +54,8 @@ class CustomerController extends Controller
      */
     public function create()
     {
-        return view('customers.create');
+        // return view('customers.create');
+        return Inertia::render('Customers/Create');
     }
 
     /**
@@ -75,7 +84,10 @@ class CustomerController extends Controller
     {
         $this->authorize('update', $customer);
 
-        return view('customers.edit', compact('customer'));
+        // return view('customers.edit', compact('customer'));
+        return Inertia::render('Customers/Edit', [
+            'customer' => $customer
+        ]);
     }
 
     /**
